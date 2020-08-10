@@ -5,32 +5,13 @@ import {
 } from 'react-native';
 
 export default TextArea = (props) => {
-  const [borderColor, setBorderColor] = useState([]);
-
-  useEffect(() => {
-    setBorderColor(
-      '#999'
-    );
-  }, []);
-
-  const onFocus = () => {
-    setBorderColor(
-      '#EB5D00'
-    )
-  }
-  const onBlur = () => {
-    setBorderColor(
-      '#999'
-    )
-  }
-
   return (
     <TextInput
       style={{
         height: 300,
         borderWidth: 1,
         padding: 5,
-        borderColor: borderColor,
+        borderColor: 'rgb(153, 153, 153)',
         borderRadius: 5,
         backgroundColor: '#fff'
       }}

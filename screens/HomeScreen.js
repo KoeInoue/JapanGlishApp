@@ -2,9 +2,9 @@ import React, { useState, useEffect } from 'react';
 import { StyleSheet, View, FlatList, SafeAreaView } from 'react-native';
 import LessonItem from '../components/modules/LessonItem';
 import Header from '../components/layout/Header';
-// import axios from 'react-native-axios';
+import axios from 'axios';
 
-// const URL = 'http://awesomeproject.lvh.me/api/lessons';
+const URL = 'https://japanglish.herokuapp.com/api/lessons';
 
 export default HomeScreen = (props) => {
   const [lessons, setLessons] = useState([]);
@@ -14,40 +14,38 @@ export default HomeScreen = (props) => {
     fetchLessons();
   }, []);
 
-  const fetchLessons = () => {
-    setLoading(true);
-    // try {
-    //   let response = axios.get(URL)
-    //     .then(response => console.log(response.data))
-    //     .catch((error) => {
-    //       console.log(error.config);
-    //     })
-    // } catch (error) {
-    //   console.error(error);
-    // }
-    setLessons([
-      {
-      title: '英語学習を効率化する方法',
-      content: `英語学習を効率化する方法をご紹介します。
-      教材やメソッドを調べる時間に費やしてしまいがちですが`,
-      user: {
-        name: 'k-inoue'
-      },
-      imageUrl: 'aaaa',
-      price: '100',
-      },
-      {
-      title: '英語学習を効率化する方法',
-      content: `英語学習を効率化する方法をご紹介します。
-      教材やメソッドを調べる時間に費やしてしまいがちですが`,
-      user: {
-        name: 'k-inoue'
-      },
-      imageUrl: 'aaaa',
-      price: '100',
-      },
-    ])
-    setLoading(false);
+  const fetchLessons = async () => {
+    try {
+      let response = await fetch(URL);
+      let json = await response.json();
+      return setLessons(json);
+    } catch (error) {
+      return console.error(error);
+    }
+  
+    // setLessons([
+    //   {
+    //   title: '英語学習を効率化する方法',
+    //   content: `英語学習を効率化する方法をご紹介します。
+    //   教材やメソッドを調べる時間に費やしてしまいがちですが`,
+    //   user: {
+    //     name: 'k-inoue'
+    //   },
+    //   imageUrl: 'aaaa',
+    //   price: '100',
+    //   },
+    //   {
+    //   title: '英語学習を効率化する方法',
+    //   content: `英語学習を効率化する方法をご紹介します。
+    //   教材やメソッドを調べる時間に費やしてしまいがちですが`,
+    //   user: {
+    //     name: 'k-inoue'
+    //   },
+    //   imageUrl: 'aaaa',
+    //   price: '100',
+    //   },
+    // ])
+    // setLoading(false);
   };
   
   return (
