@@ -32,7 +32,6 @@ export default CreateScreen = () => {
         <Text style={styles.label}>タイトル：</Text>
         <Input
           style={styles.input}
-          borderColor='#d8d8d8'
           placeholder='タイトルを入力してください'
         />
 
