@@ -1,4 +1,7 @@
 import React from 'react';
+import TopScreen from '../screens/TopScreen';
+import LoginScreen from '../screens/LoginScreen';
+import RegisterScreen from '../screens/RegisterScreen';
 import HomeScreen from '../screens/HomeScreen';
 import LessonScreen from '../screens/LessonScreen';
 import CreateScreen from '../screens/CreateScreen';
@@ -16,9 +19,24 @@ import { Image } from 'react-native';
 const Stack = createStackNavigator();
 const Tab = createBottomTabNavigator();
 
+const TopStack = () => {
+  return (
+    <Stack.Navigator initialRouteName="Top">
+      <Stack.Screen
+        name="Top"
+        component={TopScreen}
+        options={{ headerShown: false }}
+      />
+      <Stack.Screen name="Login" component={LoginScreen} />
+      <Stack.Screen name="Register" component={RegisterScreen} />
+      <Stack.Screen name="Navigator" component={Navigator} />
+    </Stack.Navigator>
+  )
+}
+
 const HomeStack = () => {
   return (
-    <Stack.Navigator initialRouteName="Home">
+    <Stack.Navigator>
       <Stack.Screen name="Home" component={HomeScreen} options={{ headerShown: false }} />
       <Stack.Screen name="Lesson" component={LessonScreen} />
     </Stack.Navigator>
@@ -37,33 +55,48 @@ const SettingStack = () => {
   )
 }
 
+const HomeTabs = () => {
+  return (
+    <Tab.Navigator tabBarOptions={{
+      activeTintColor: '#EB5D00',
+      inactiveTintColor: '#333',
+      activeBackgroundColor: '#EEDCB3',
+    }}>
+      <Tab.Screen name="Home" component={HomeStack} options={{
+        tabBarLabel: 'ホーム',
+        tabBarIcon: ({ focused }) => (
+          <Image source={focused ? require('../src/img/home-active.png') : require('../src/img/home.png')} style={{ width: 20, height: 20 }} />
+        ),
+      }} />
+      <Tab.Screen name="Create" component={CreateScreen} options={{
+        tabBarLabel: 'レッスン作成',
+        tabBarIcon: ({ focused }) => (
+          <Image source={focused ? require('../src/img/pen-active.png') : require('../src/img/pen.png')} style={{ width: 20, height: 20 }} />
+        ),
+      }} />
+      <Tab.Screen name="Setting" component={SettingStack} options={{
+        tabBarLabel: 'その他',
+        tabBarIcon: ({ focused }) => (
+          <Image source={focused ? require('../src/img/head-active.png') : require('../src/img/head.png')} style={{ width: 20, height: 20 }} />
+        ),
+      }} />
+    </Tab.Navigator>
+  )
+}
+
 export default function Navigator() {
   return (
     <NavigationContainer>
-      <Tab.Navigator tabBarOptions={{
-        activeTintColor: '#EB5D00',
-        inactiveTintColor: '#333',
-        activeBackgroundColor: '#EEDCB3',
-      }}>
-        <Tab.Screen name="Home" component={HomeStack} options={{
-          tabBarLabel: 'ホーム',
-          tabBarIcon: ({ focused }) => (
-            <Image source={focused ? require('../src/img/home-active.png') : require('../src/img/home.png')} style={{ width: 20, height: 20 }} />
-          ),
-        }} />
-        <Tab.Screen name="Create" component={CreateScreen} options={{
-          tabBarLabel: 'レッスン作成',
-          tabBarIcon: ({ focused }) => (
-            <Image source={focused ? require('../src/img/pen-active.png') : require('../src/img/pen.png')} style={{ width: 20, height: 20 }} />
-          ),
-        }} />
-        <Tab.Screen name="Setting" component={SettingStack} options={{
-          tabBarLabel: 'その他',
-          tabBarIcon: ({ focused }) => (
-            <Image source={focused ? require('../src/img/head-active.png') : require('../src/img/head.png')} style={{ width: 20, height: 20 }} />
-          ),
-        }} />
-      </Tab.Navigator>
+      <Stack.Navigator initialRouteName="Top">
+        <Stack.Screen
+          name="Top"
+          component={TopScreen}
+          options={{ headerShown: false }}
+        />
+        <Stack.Screen name="Login" component={LoginScreen} />
+        <Stack.Screen name="Register" component={RegisterScreen} />
+        <Stack.Screen name="HomeTabs" component={HomeTabs} />
+      </Stack.Navigator>
     </NavigationContainer>
   );
 }
