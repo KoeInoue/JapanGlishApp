@@ -40,7 +40,7 @@ export default HomeScreen = (props) => {
               userName={item.user.name}
               imageUrl={item.imageUrl}
               price={item.price}
-              onPress={() => props.navigation.navigate('HomeTab')}
+              onPress={() => props.navigation.navigate('Lesson', {lesson: item})}
             />
           )}
           keyExtractor={(item, index) => index.toString()}

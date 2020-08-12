@@ -9,6 +9,7 @@ import {
   KeyboardAvoidingView,
 } from 'react-native';
 import AsyncStorage from '@react-native-community/async-storage'
+import { ScrollView } from 'react-native-gesture-handler';
 
 const URL = 'https://japanglish.herokuapp.com/api/register';
 
@@ -43,45 +44,52 @@ export default RegisterScreen = (props) => {
 
   return (
     <SafeAreaView>
-      <KeyboardAvoidingView>
-      <View style={styles.title}>
-        <Text style={styles.titleText}>会員登録されていない方</Text>
-      </View>
-      <View style={styles.container}>
-        <Text style={styles.label}>ニックネーム：</Text>
-        <TextInput
-          style={styles.input}
-          placeholder='山田太郎'
-          onChangeText={name => setName(name)}
-        />
-        <Text style={styles.label}>メールアドレス：</Text>
-        <TextInput
-          style={styles.input}
-          placeholder='example@test.com'
-          onChangeText={email => setEmail(email)}
-        />
-        <Text style={styles.label}>パスワード：</Text>
-        <TextInput
-          style={styles.input}
-          placeholder='半角英数字6文字以上'
-          onChangeText={password => setPassword(password)}
-        />
-        <Text style={styles.label}>自己紹介文：</Text>
-        <TextInput
-          style={[styles.input, {height: 300}]}
-          placeholder='こんにちは。太郎です。英語学習を初めて3ヶ月目です...'
-          numberOfLines={5}
-          multiline
-          onChangeText={introduce => setIntroduce(introduce)}
-        />
-        <View style={styles.buttonWraper}>
-          <TouchableOpacity style={styles.submitButtonContainer} onPress={() =>
-            register()}>
-            <Text style={styles.buttonText}>新規登録する</Text>
-          </TouchableOpacity>
-        </View>
-        </View>
-      </KeyboardAvoidingView>
+      <ScrollView>
+        <KeyboardAvoidingView behavior='padding'>
+          <View style={styles.title}>
+            <Text style={styles.titleText}>会員登録されていない方</Text>
+          </View>
+          <View style={styles.container}>
+            <Text style={styles.label}>ニックネーム：</Text>
+            <TextInput
+              style={styles.input}
+              placeholder='山田太郎'
+              onChangeText={name => setName(name)}
+              autoFocus={true}
+              keyboardType='email-address'
+              autoCapitalize='none'
+            />
+            <Text style={styles.label}>メールアドレス：</Text>
+            <TextInput
+              style={styles.input}
+              placeholder='example@test.com'
+              onChangeText={email => setEmail(email)}
+              autoCapitalize='none'
+            />
+            <Text style={styles.label}>パスワード：</Text>
+            <TextInput
+              style={styles.input}
+              placeholder='半角英数字6文字以上'
+              onChangeText={password => setPassword(password)}
+              autoCapitalize='none'
+            />
+            <Text style={styles.label}>自己紹介文：</Text>
+            <TextInput
+              style={[styles.input, {height: 300}]}
+              placeholder='こんにちは。太郎です。英語学習を初めて3ヶ月目です...'
+              numberOfLines={5}
+              multiline
+              onChangeText={introduce => setIntroduce(introduce)}
+            />
+            <View style={styles.buttonWraper}>
+              <TouchableOpacity style={styles.submitButtonContainer} onPress={() =>
+                register()}>
+                <Text style={styles.buttonText}>新規登録する</Text>
+              </TouchableOpacity>
+            </View>
+          </View>
+        </KeyboardAvoidingView>
+      </ScrollView>
     </SafeAreaView>
   );
 }

@@ -40,12 +40,15 @@ export default LoginScreen = (props) => {
           style={styles.input}
           placeholder='example@test.com'
           onChangeText={email => setEmail(email)}
+          autoFocus={true}
+          autoCapitalize='none'
         />
         <Text style={styles.label}>パスワード：</Text>
         <TextInput
           style={styles.input}
           placeholder='半角英数字6文字以上'
           onChangeText={password => setPassword(password)}
+          autoCapitalize='none'
         />
         <View style={styles.buttonWraper}>
           <TouchableOpacity style={styles.submitButtonContainer} onPress={() => login()}>

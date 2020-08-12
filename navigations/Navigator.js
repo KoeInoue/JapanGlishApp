@@ -87,25 +87,45 @@ const HomeTabs = () => {
 }
 
 export default function Navigator() {
+  const [iLoggedIn, setIsLoggedIn] = useState(false);
+
   useEffect(() => {
     isAuth();
   }, []);
 
-  const isAuth = () => {
-    const tokens = AsyncStorage.getItem('tokens');
-    console.log(tokens)
-    console.log('aaa')
+  const isAuth = async () => {
+    const tokens = await AsyncStorage.getItem('tokens');
+    if (tokens == null) {
+      return setIsLoggedIn(false);
+    } else {
+      return setIsLoggedIn(true);
+    }
   }
 
-  return (
-    <NavigationContainer>
-      <Stack.Navigator initialRouteName="Top">
+  const switchScreen = () => {
+    if (iLoggedIn) {
+      return (
         <Stack.Screen
           name="Top"
           component={TopStack}
           options={{ headerShown: false }}
         />
-        <Stack.Screen name="HomeTabs" component={HomeTabs} options={{ headerShown: false }} />
+      )
+    } else {
+      return (
+        <Stack.Screen
+          name="HomeTabs"
+          component={HomeTabs}
+          options={{ headerShown: false }}
+        />
+      )
+    }
+  }
+
+  return (
+    <NavigationContainer>
+      <Stack.Navigator initialRouteName="Top">
+        {switchScreen()}
       </Stack.Navigator>
     </NavigationContainer>
   );
