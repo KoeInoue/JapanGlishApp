@@ -1,43 +1,87 @@
 import React, { useState, useEffect } from 'react';
-import { StyleSheet, View, TouchableOpacity, SafeAreaView, Text } from 'react-native';
-import Input from '../components/common/Input'
-import TextArea from '../components/common/TextArea';
+import {
+  StyleSheet,
+  View,
+  TouchableOpacity,
+  SafeAreaView,
+  Text,
+  TextInput,
+  KeyboardAvoidingView,
+} from 'react-native';
+import AsyncStorage from '@react-native-community/async-storage'
+
+const URL = 'https://japanglish.herokuapp.com/api/register';
 
 export default RegisterScreen = (props) => {
+  const [name, setName] = useState();
+  const [email, setEmail] = useState();
+  const [password, setPassword] = useState();
+  const [introduce, setIntroduce] = useState();
+  
+  const register = async () => {
+    try {
+      fetch(URL, {
+        method: 'POST',
+        headers: {
+          Accept: 'application/json',
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          name: name,
+          email: email,
+          password: password,
+          introduce: introduce
+        }),
+      }).then(res => res.json())
+        .then(tokens => {
+          AsyncStorage.setItem('tokens', JSON.stringify(tokens));
+      });
+    } catch (error) {
+      return console.error(error);
+    }
+  }
+
   return (
     <SafeAreaView>
+      <KeyboardAvoidingView>
       <View style={styles.title}>
         <Text style={styles.titleText}>会員登録されていない方</Text>
       </View>
       <View style={styles.container}>
         <Text style={styles.label}>ニックネーム：</Text>
-        <Input
+        <TextInput
           style={styles.input}
           placeholder='山田太郎'
+          onChangeText={name => setName(name)}
         />
         <Text style={styles.label}>メールアドレス：</Text>
-        <Input
+        <TextInput
           style={styles.input}
           placeholder='example@test.com'
+          onChangeText={email => setEmail(email)}
         />
         <Text style={styles.label}>パスワード：</Text>
-        <Input
+        <TextInput
           style={styles.input}
           placeholder='半角英数字6文字以上'
+          onChangeText={password => setPassword(password)}
         />
         <Text style={styles.label}>自己紹介文：</Text>
-        <TextArea
-          style={styles.input}
+        <TextInput
+          style={[styles.input, {height: 300}]}
           placeholder='こんにちは。太郎です。英語学習を初めて3ヶ月目です...'
           numberOfLines={5}
+          multiline
+          onChangeText={introduce => setIntroduce(introduce)}
         />
         <View style={styles.buttonWraper}>
           <TouchableOpacity style={styles.submitButtonContainer} onPress={() =>
-            props.navigation.navigate('HomeTabs')}>
+            register()}>
             <Text style={styles.buttonText}>新規登録する</Text>
           </TouchableOpacity>
         </View>
-      </View>
+        </View>
+      </KeyboardAvoidingView>
     </SafeAreaView>
   );
 }
@@ -64,6 +108,15 @@ const styles = StyleSheet.create({
     marginBottom: 5,
     fontWeight: 'bold',
     color: '#333',
+  },
+
+  input: {
+    height: 35,
+    borderWidth: 1,
+    padding: 5,
+    borderColor: 'rgb(153, 153, 153)',
+    borderRadius: 5,
+    backgroundColor: '#fff'
   },
 
   buttonWraper: {

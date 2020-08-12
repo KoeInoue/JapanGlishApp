@@ -26,13 +26,13 @@ const styles = StyleSheet.create({
     width: '100%',
     height: '100%',
     alignItems: 'center',
+    justifyContent: 'center',
     backgroundColor: '#EB5D00'
   },
 
   logo: {
     height: 200,
     width: 200,
-    marginTop: 150,
   },
 
   title: {

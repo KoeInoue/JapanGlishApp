@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { StyleSheet, View, TouchableOpacity, SafeAreaView, Text, TextInput } from 'react-native';
+import AsyncStorage from '@react-native-community/async-storage'
 
 const URL = 'https://japanglish.herokuapp.com/api/login';
 
@@ -7,7 +8,6 @@ export default LoginScreen = (props) => {
   const [email, setEmail] = useState();
   const [password, setPassword] = useState();
   
-
   const login = async () => {
     try {
       fetch(URL, {
@@ -22,12 +22,11 @@ export default LoginScreen = (props) => {
         }),
       }).then(res => res.json())
         .then(tokens => {
-          console.log(tokens)
+          AsyncStorage.setItem('tokens', JSON.stringify(tokens));
         });
     } catch (error) {
       return console.error(error);
     }
-    
   }
 
   return (

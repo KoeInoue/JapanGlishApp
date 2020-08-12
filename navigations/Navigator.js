@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import TopScreen from '../screens/TopScreen';
 import LoginScreen from '../screens/LoginScreen';
 import RegisterScreen from '../screens/RegisterScreen';
@@ -14,6 +14,7 @@ import { NavigationContainer } from '@react-navigation/native';
 import { createStackNavigator } from '@react-navigation/stack';
 import { createSwitchNavigator } from 'react-navigation';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
+import AsyncStorage from '@react-native-community/async-storage'
 
 import { Image } from 'react-native';
 
@@ -86,16 +87,24 @@ const HomeTabs = () => {
 }
 
 export default function Navigator() {
+  useEffect(() => {
+    isAuth();
+  }, []);
+
+  const isAuth = () => {
+    const tokens = AsyncStorage.getItem('tokens');
+    console.log(tokens)
+    console.log('aaa')
+  }
+
   return (
     <NavigationContainer>
       <Stack.Navigator initialRouteName="Top">
         <Stack.Screen
           name="Top"
-          component={TopScreen}
+          component={TopStack}
           options={{ headerShown: false }}
         />
-        <Stack.Screen name="Login" component={LoginScreen} />
-        <Stack.Screen name="Register" component={RegisterScreen} />
         <Stack.Screen name="HomeTabs" component={HomeTabs} options={{ headerShown: false }} />
       </Stack.Navigator>
     </NavigationContainer>
