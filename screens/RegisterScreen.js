@@ -7,7 +7,7 @@ export default RegisterScreen = (props) => {
   return (
     <SafeAreaView>
       <View style={styles.title}>
-        <Text style={styles.titleText}>会員されていない方</Text>
+        <Text style={styles.titleText}>会員登録されていない方</Text>
       </View>
       <View style={styles.container}>
         <Text style={styles.label}>ニックネーム：</Text>

@@ -3,6 +3,7 @@ import {
   StyleSheet,
   View,
   SafeAreaView,
+  KeyboardAvoidingView,
   Text,
   TextInput,
   Button
@@ -25,6 +26,7 @@ export default CreateScreen = () => {
 
   return (
     <SafeAreaView>
+      <KeyboardAvoidingView>
       <View>
         <Header screenName="レッスンを投稿しよう！" />
       </View>
@@ -51,6 +53,7 @@ export default CreateScreen = () => {
           <SubmitButton style={styles.submitButton} submitLesson={postLesson} />
         </View>
       </View>
+      </KeyboardAvoidingView>
     </SafeAreaView>
   );
 };

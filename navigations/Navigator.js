@@ -12,6 +12,7 @@ import BrowserScreen from '../screens/BrowserScreen';
 import LogoutScreen from '../screens/LogoutScreen';
 import { NavigationContainer } from '@react-navigation/native';
 import { createStackNavigator } from '@react-navigation/stack';
+import { createSwitchNavigator } from 'react-navigation';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 
 import { Image } from 'react-native';

@@ -1,20 +1,29 @@
 import React, { useState, useEffect } from 'react';
-import { StyleSheet, View, TouchableOpacity, SafeAreaView, Text } from 'react-native';
-import Input from '../components/common/Input'
-import axios from 'axios';
+import { StyleSheet, View, TouchableOpacity, SafeAreaView, Text, TextInput } from 'react-native';
 
 const URL = 'https://japanglish.herokuapp.com/api/login';
 
 export default LoginScreen = (props) => {
-  const [email, setEmail] = useState([]);
-  const [password, setPassword] = useState([]);
+  const [email, setEmail] = useState();
+  const [password, setPassword] = useState();
   
 
   const login = async () => {
     try {
-      // let response = await axios.post(URL);
-      // let json = await response.json();
-      props.navigation.navigate('HomeTabs');
+      fetch(URL, {
+        method: 'POST',
+        headers: {
+          Accept: 'application/json',
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          email: email,
+          password: password,
+        }),
+      }).then(res => res.json())
+        .then(tokens => {
+          console.log(tokens)
+        });
     } catch (error) {
       return console.error(error);
     }
@@ -28,16 +37,16 @@ export default LoginScreen = (props) => {
       </View>
       <View style={styles.container}>
         <Text style={styles.label}>メールアドレス：</Text>
-        <Input
+        <TextInput
           style={styles.input}
           placeholder='example@test.com'
-          onChangeText={(email) => setEmail(email)}
+          onChangeText={email => setEmail(email)}
         />
         <Text style={styles.label}>パスワード：</Text>
-        <Input
+        <TextInput
           style={styles.input}
           placeholder='半角英数字6文字以上'
-          onChangeText={(password) => setPassword(password)}
+          onChangeText={password => setPassword(password)}
         />
         <View style={styles.buttonWraper}>
           <TouchableOpacity style={styles.submitButtonContainer} onPress={() => login()}>
@@ -71,6 +80,15 @@ const styles = StyleSheet.create({
     marginBottom: 5,
     fontWeight: 'bold',
     color: '#333',
+  },
+
+  input: {
+    height: 35,
+    borderWidth: 1,
+    padding: 5,
+    borderColor: 'rgb(153, 153, 153)',
+    borderRadius: 5,
+    backgroundColor: '#fff'
   },
 
   buttonWraper: {
