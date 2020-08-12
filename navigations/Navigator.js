@@ -12,6 +12,7 @@ import BrowserScreen from '../screens/BrowserScreen';
 import LogoutScreen from '../screens/LogoutScreen';
 import { NavigationContainer } from '@react-navigation/native';
 import { createStackNavigator } from '@react-navigation/stack';
+import { createSwitchNavigator } from 'react-navigation';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 
 import { Image } from 'react-native';
@@ -95,7 +96,7 @@ export default function Navigator() {
         />
         <Stack.Screen name="Login" component={LoginScreen} />
         <Stack.Screen name="Register" component={RegisterScreen} />
-        <Stack.Screen name="HomeTabs" component={HomeTabs} />
+        <Stack.Screen name="HomeTabs" component={HomeTabs} options={{ headerShown: false }} />
       </Stack.Navigator>
     </NavigationContainer>
   );

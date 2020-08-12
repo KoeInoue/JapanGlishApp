@@ -19,8 +19,6 @@ export default Input = (props) => {
       placeholderTextColor='#333'
       selectionColor='#333'
       keyboardType={props.keyboardType}
-      onBlur={() => onBlur()}
-      onFocus={() => onFocus()}
     />
   )
 }

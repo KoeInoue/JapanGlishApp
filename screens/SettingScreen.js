@@ -29,15 +29,6 @@ export default SettingScreen = (props) => {
         </TouchableOpacity>
         <TouchableOpacity
           style={styles.linkContainer}
-          onPress={() => props.navigation.navigate('Browser')}>
-          <View style={styles.linkWrapper}>
-            <Text style={styles.linkText}>
-              <Image source={require('../src/img/earth-active.png')} style={{ width: 20, height: 20 }} /> ブラウザ版で見る 
-            </Text>
-          </View>
-        </TouchableOpacity>
-        <TouchableOpacity
-          style={styles.linkContainer}
           onPress={() => props.navigation.navigate('Logout')}>
           <View style={styles.linkWrapper}>
             <Text style={styles.linkText}>

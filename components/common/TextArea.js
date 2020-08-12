@@ -21,8 +21,6 @@ export default TextArea = (props) => {
       keyboardType={props.keyboardType}
       numberOfLines={props.numberOfLines}
       multiline
-      onBlur={() => onBlur()}
-      onFocus={() => onFocus()}
     />
   )
 }
