@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import SplashScreen from '../screens/SplashScreen'
 import TopScreen from '../screens/TopScreen';
 import LoginScreen from '../screens/LoginScreen';
 import RegisterScreen from '../screens/RegisterScreen';
@@ -87,13 +88,18 @@ const HomeTabs = () => {
 }
 
 export default function Navigator() {
-  const [iLoggedIn, setIsLoggedIn] = useState(false);
+  const [isLoggedIn, setIsLoggedIn] = useState(false);
+  const [isLoading, setIsLoading] = useState(false);
 
   useEffect(() => {
-    isAuth();
+    setIsLoading(false);
+    isAuth().then(() => {
+      setIsLoading(false);
+    });
   }, []);
 
   const isAuth = async () => {
+    setIsLoading(true);
     const tokens = await AsyncStorage.getItem('tokens');
     if (tokens == null) {
       return setIsLoggedIn(false);
@@ -102,31 +108,19 @@ export default function Navigator() {
     }
   }
 
-  const switchScreen = () => {
-    if (iLoggedIn) {
-      return (
-        <Stack.Screen
-          name="Top"
-          component={TopStack}
-          options={{ headerShown: false }}
-        />
-      )
-    } else {
-      return (
-        <Stack.Screen
-          name="HomeTabs"
-          component={HomeTabs}
-          options={{ headerShown: false }}
-        />
-      )
-    }
+  if (isLoading) {
+    return <SplashScreen />;
+  } else {
+    return (
+      <NavigationContainer>
+        <Stack.Navigator initialRouteName="Top">
+          <Stack.Screen
+            name={(isLoggedIn) ? 'HomeTabs' : 'TopStack'}
+            component={(isLoggedIn) ? HomeTabs : TopStack}
+            options={{ headerShown: false }}
+          />
+        </Stack.Navigator>
+      </NavigationContainer>
+    );
   }
-
-  return (
-    <NavigationContainer>
-      <Stack.Navigator initialRouteName="Top">
-        {switchScreen()}
-      </Stack.Navigator>
-    </NavigationContainer>
-  );
 }
