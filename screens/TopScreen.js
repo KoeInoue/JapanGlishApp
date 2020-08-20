@@ -10,13 +10,14 @@ export default function TopScreen(props) {
       />
       <View style={styles.title}>
         <Text style={styles.titleText}>JapanGlish</Text>
-        <TouchableOpacity style={styles.button} onPress={() => props.navigation.navigate('Login')}>
-          <Text style={styles.buttonText}>ログイン</Text>
-        </TouchableOpacity>
-        <TouchableOpacity style={styles.button} onPress={() => props.navigation.navigate('Register')}>
-          <Text style={styles.buttonText}>新規登録</Text>
-        </TouchableOpacity>
       </View>
+      <Text style={styles.subTitleText}>- 英語学習効率化アプリ -</Text>
+      <TouchableOpacity style={styles.button} onPress={() => props.navigation.navigate('Login')}>
+        <Text style={styles.buttonText}>ログイン</Text>
+      </TouchableOpacity>
+      <TouchableOpacity style={styles.button} onPress={() => props.navigation.navigate('Register')}>
+        <Text style={styles.buttonText}>新規登録</Text>
+      </TouchableOpacity>
     </SafeAreaView>
   );
 }
@@ -26,13 +27,13 @@ const styles = StyleSheet.create({
     width: '100%',
     height: '100%',
     alignItems: 'center',
+    justifyContent: 'center',
     backgroundColor: '#EB5D00'
   },
 
   logo: {
-    height: 200,
-    width: 200,
-    marginTop: 150,
+    height: 160,
+    width: 160,
   },
 
   title: {
@@ -46,9 +47,16 @@ const styles = StyleSheet.create({
     fontWeight: 'bold',
   },
 
+  subTitleText: {
+    color: '#fff',
+    fontSize: 20,
+    fontWeight: 'bold',
+    marginTop: 10
+  },
+
   button: {
     backgroundColor: '#EB5D00',
-    borderWidth: 1,
+    borderWidth: 1.5,
     borderColor: '#fff',
     height: 50,
     borderRadius: 5,

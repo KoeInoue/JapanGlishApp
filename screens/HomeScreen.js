@@ -22,30 +22,6 @@ export default HomeScreen = (props) => {
     } catch (error) {
       return console.error(error);
     }
-  
-    // setLessons([
-    //   {
-    //   title: '英語学習を効率化する方法',
-    //   content: `英語学習を効率化する方法をご紹介します。
-    //   教材やメソッドを調べる時間に費やしてしまいがちですが`,
-    //   user: {
-    //     name: 'k-inoue'
-    //   },
-    //   imageUrl: 'aaaa',
-    //   price: '100',
-    //   },
-    //   {
-    //   title: '英語学習を効率化する方法',
-    //   content: `英語学習を効率化する方法をご紹介します。
-    //   教材やメソッドを調べる時間に費やしてしまいがちですが`,
-    //   user: {
-    //     name: 'k-inoue'
-    //   },
-    //   imageUrl: 'aaaa',
-    //   price: '100',
-    //   },
-    // ])
-    // setLoading(false);
   };
   
   return (
@@ -64,7 +40,7 @@ export default HomeScreen = (props) => {
               userName={item.user.name}
               imageUrl={item.imageUrl}
               price={item.price}
-              onPress={() => props.navigation.navigate('HomeTab')}
+              onPress={() => props.navigation.navigate('Lesson', {lesson: item})}
             />
           )}
           keyExtractor={(item, index) => index.toString()}
