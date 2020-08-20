@@ -1,33 +1,13 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useContext } from 'react';
 import { StyleSheet, View, TouchableOpacity, SafeAreaView, Text, TextInput } from 'react-native';
 import AsyncStorage from '@react-native-community/async-storage'
-
-const URL = 'https://japanglish.herokuapp.com/api/login';
+import { AuthContext} from '../navigations/Navigator'
 
 export default LoginScreen = (props) => {
   const [email, setEmail] = useState();
   const [password, setPassword] = useState();
-  
-  const login = async () => {
-    try {
-      fetch(URL, {
-        method: 'POST',
-        headers: {
-          Accept: 'application/json',
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({
-          email: email,
-          password: password,
-        }),
-      }).then(res => res.json())
-        .then(tokens => {
-          AsyncStorage.setItem('tokens', JSON.stringify(tokens));
-        });
-    } catch (error) {
-      return console.error(error);
-    }
-  }
+
+  const { signIn } = useContext(AuthContext);
 
   return (
     <SafeAreaView>
@@ -51,7 +31,7 @@ export default LoginScreen = (props) => {
           autoCapitalize='none'
         />
         <View style={styles.buttonWraper}>
-          <TouchableOpacity style={styles.submitButtonContainer} onPress={() => login()}>
+          <TouchableOpacity style={styles.submitButtonContainer} onPress={() => signIn({ email, password })}>
             <Text style={styles.buttonText}>ログイン</Text>
           </TouchableOpacity>
         </View>

@@ -1,18 +1,16 @@
-import React from 'react';
+import React, { useContext } from 'react';
 import { StyleSheet, View, SafeAreaView, Text, TouchableOpacity } from 'react-native';
 import AsyncStorage from '@react-native-community/async-storage'
+import { AuthContext } from '../navigations/Navigator'
 
 export default LogoutScreen = props => {
-  const logout = async () => {
-    await AsyncStorage.removeItem('tokens');
-    props.navigation.navigate('Home');
-  }
+  const { signOut } = useContext(AuthContext);
 
   return (
     <SafeAreaView>
       <View style={styles.container} >
         <View style={styles.buttonWraper}>
-          <TouchableOpacity style={styles.submitButtonContainer} onPress={logout}>
+          <TouchableOpacity style={styles.submitButtonContainer} onPress={() => signOut()}>
             <Text style={styles.buttonText}>ログアウトする</Text>
           </TouchableOpacity>
         </View>

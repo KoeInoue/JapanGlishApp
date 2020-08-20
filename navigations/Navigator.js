@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useReducer, useMemo } from 'react';
 import SplashScreen from '../screens/SplashScreen'
 import TopScreen from '../screens/TopScreen';
 import LoginScreen from '../screens/LoginScreen';
@@ -16,6 +16,8 @@ import { createStackNavigator } from '@react-navigation/stack';
 import { createSwitchNavigator } from 'react-navigation';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import AsyncStorage from '@react-native-community/async-storage'
+const AuthContext = React.createContext();
+const URL = 'https://japanglish.herokuapp.com/api/login';
 
 import { Image } from 'react-native';
 
@@ -88,39 +90,143 @@ const HomeTabs = () => {
 }
 
 export default function Navigator() {
-  const [isLoggedIn, setIsLoggedIn] = useState(false);
-  const [isLoading, setIsLoading] = useState(false);
+  const [state, dispatch] = useReducer(
+    (prevState, action) => {
+      switch (action.type) {
+        case 'RESTORE_TOKEN':
+          return {
+            ...prevState,
+            userToken: action.token,
+            isLoading: false,
+          };
+        case 'SIGN_IN':
+          return {
+            ...prevState,
+            isSignout: false,
+            userToken: action.token,
+          };
+        case 'SIGN_OUT':
+          return {
+            ...prevState,
+            isSignout: true,
+            userToken: null,
+          };
+      }
+    },
+    {
+      isLoading: true,
+      isSignout: false,
+      userToken: null,
+    }
+  );
 
   useEffect(() => {
-    setIsLoading(false);
-    isAuth().then(() => {
-      setIsLoading(false);
-    });
+    // Fetch the token from storage then navigate to our appropriate place
+    const bootstrapAsync = async () => {
+      let userToken;
+
+      try {
+        userToken = await AsyncStorage.getItem('tokens');
+      } catch (e) {
+        // Restoring token failed
+      }
+
+      // After restoring token, we may need to validate it in production apps
+
+      // This will switch to the App screen or Auth screen and this loading
+      // screen will be unmounted and thrown away.
+      dispatch({ type: 'RESTORE_TOKEN', token: userToken });
+    };
+
+    bootstrapAsync();
   }, []);
 
-  const isAuth = async () => {
-    setIsLoading(true);
-    const tokens = await AsyncStorage.getItem('tokens');
-    if (tokens == null) {
-      return setIsLoggedIn(false);
-    } else {
-      return setIsLoggedIn(true);
-    }
-  }
+  const authContext = useMemo(
+    () => ({
+      signIn: async data => {
+        try {
+          fetch(URL, {
+            method: 'POST',
+            headers: {
+              Accept: 'application/json',
+              'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({
+              email: data.email,
+              password: data.password,
+            }),
+          }).then(res => res.json())
+            .then(tokens => {
+              AsyncStorage.setItem('tokens', JSON.stringify(tokens));
+              dispatch({ type: 'SIGN_IN', token: tokens });
+            });
+        } catch (error) {
+          return console.error(error);
+        }
+      },
+      
+      signOut: async () => {
+        await AsyncStorage.removeItem('tokens');
+        dispatch({ type: 'SIGN_OUT' })
+      },
 
-  if (isLoading) {
-    return <SplashScreen />;
-  } else {
-    return (
+      signUp: async data => {
+        try {
+          fetch(URL, {
+            method: 'POST',
+            headers: {
+              Accept: 'application/json',
+              'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({
+              name: data.name,
+              email: data.email,
+              password: data.password,
+              introduce: data.introduce
+            }),
+          }).then(res => res.json())
+            .then(tokens => {
+              AsyncStorage.setItem('tokens', JSON.stringify(tokens));
+              dispatch({ type: 'SIGN_IN', token: tokens });
+            });
+        } catch (error) {
+          return console.error(error);
+        }
+      },
+    }),
+    []
+  );
+  
+  return (
+    <AuthContext.Provider value={authContext}>
       <NavigationContainer>
-        <Stack.Navigator initialRouteName="Top">
-          <Stack.Screen
-            name={(isLoggedIn) ? 'HomeTabs' : 'TopStack'}
-            component={(isLoggedIn) ? HomeTabs : TopStack}
-            options={{ headerShown: false }}
-          />
+        <Stack.Navigator>
+          {state.isLoading ? (
+            // We haven't finished checking for the token yet
+            <Stack.Screen name="Splash" component={SplashScreen} />
+          ) : state.userToken == null ? (
+            // No token found, user isn't signed in
+            <Stack.Screen
+              name="TopStack"
+              component={TopStack}
+              options={{
+                headerShown: false,
+                animationTypeForReplace: state.isSignout ? 'pop' : 'push',
+              }}
+            />
+          ) : (
+            // User is signed in
+            <Stack.Screen
+              name="HomeTabs"
+              component={HomeTabs}
+              options={{
+                headerShown: false,
+              }}
+            />
+          )}
         </Stack.Navigator>
       </NavigationContainer>
-    );
-  }
+    </AuthContext.Provider>
+  );
 }
+export { AuthContext }

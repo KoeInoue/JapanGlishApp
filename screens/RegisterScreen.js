@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useContext } from 'react';
 import {
   StyleSheet,
   View,
@@ -10,8 +10,7 @@ import {
 } from 'react-native';
 import AsyncStorage from '@react-native-community/async-storage'
 import { ScrollView } from 'react-native-gesture-handler';
-
-const URL = 'https://japanglish.herokuapp.com/api/register';
+import { AuthContext } from '../navigations/Navigator'
 
 export default RegisterScreen = (props) => {
   const [name, setName] = useState();
@@ -19,28 +18,7 @@ export default RegisterScreen = (props) => {
   const [password, setPassword] = useState();
   const [introduce, setIntroduce] = useState();
   
-  const register = async () => {
-    try {
-      fetch(URL, {
-        method: 'POST',
-        headers: {
-          Accept: 'application/json',
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({
-          name: name,
-          email: email,
-          password: password,
-          introduce: introduce
-        }),
-      }).then(res => res.json())
-        .then(tokens => {
-          AsyncStorage.setItem('tokens', JSON.stringify(tokens));
-      });
-    } catch (error) {
-      return console.error(error);
-    }
-  }
+  const { signUp } = useContext(AuthContext);
 
   return (
     <SafeAreaView>
@@ -83,7 +61,7 @@ export default RegisterScreen = (props) => {
             />
             <View style={styles.buttonWraper}>
               <TouchableOpacity style={styles.submitButtonContainer} onPress={() =>
-                register()}>
+                signUp({ name, email, password, introduce })}>
                 <Text style={styles.buttonText}>新規登録する</Text>
               </TouchableOpacity>
             </View>
