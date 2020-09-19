@@ -5,7 +5,7 @@ import Header from '../components/layout/Header';
 import AsyncStorage from '@react-native-community/async-storage'
 import axios from 'axios'
 
-const URL = 'https://japanglish.herokuapp.com/api/';
+const URL = 'https://japanglish.herokuapp.com/api';
 
 export default HomeScreen = (props) => {
   const [lessons, setLessons] = useState([]);
@@ -28,10 +28,9 @@ export default HomeScreen = (props) => {
   const fetchLessons = async () => {
     try {
       await loadToken().then(() => {
-        axios.get(URL, {
+        axios.get(`${URL}/lessons?api_token=${tokens}`, {
             method: 'GET',
             headers: {
-              'Authorization': `Bearer ${tokens}`,
               'Accept': 'application/json',
             },
           }).then((res) => {
