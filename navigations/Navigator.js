@@ -9,6 +9,7 @@ import CreateScreen from '../screens/CreateScreen';
 import SettingScreen from '../screens/SettingScreen';
 import ProfileScreen from '../screens/ProfileScreen';
 import MyLessonScreen from '../screens/MyLessonScreen';
+import MyLessonDetailScreen from '../screens/MyLessonDetailScreen';
 import BrowserScreen from '../screens/BrowserScreen';
 import LogoutScreen from '../screens/LogoutScreen';
 import { NavigationContainer } from '@react-navigation/native';
@@ -16,9 +17,10 @@ import { createStackNavigator } from '@react-navigation/stack';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import AsyncStorage from '@react-native-community/async-storage'
 import { Image } from 'react-native';
+import axios from 'axios'
 
 const AuthContext = React.createContext();
-const URL = 'https://japanglish.herokuapp.com/api/login';
+const URL = 'https://japanglish.herokuapp.com/api/';
 
 const Stack = createStackNavigator();
 const Tab = createBottomTabNavigator();
@@ -53,6 +55,7 @@ const SettingStack = () => {
       <Stack.Screen name="Setting" component={SettingScreen} options={{ headerShown: false }} />
       <Stack.Screen name="Profile" component={ProfileScreen} />
       <Stack.Screen name="MyLesson" component={MyLessonScreen} />
+      <Stack.Screen name="MyLessonDetail" component={MyLessonDetailScreen} />
       <Stack.Screen name="Browser" component={BrowserScreen} />
       <Stack.Screen name="Logout" component={LogoutScreen} />
     </Stack.Navigator>
@@ -144,7 +147,7 @@ export default function Navigator() {
     () => ({
       signIn: async data => {
         try {
-          fetch(URL, {
+          fetch(`${URL}login`, {
             method: 'POST',
             headers: {
               Accept: 'application/json',
@@ -155,16 +158,17 @@ export default function Navigator() {
               password: data.password,
             }),
           }).catch(() => {
-            console.log('errorr')
+              console.log('errorr')
             })
             .then(res => res.json())
             .then(tokens => {
-              if (tokens.message !== 'Server Error') {
-                AsyncStorage.setItem('tokens', JSON.stringify(tokens.access_token));
-                dispatch({ type: 'SIGN_IN', token: tokens.access_token });
+              console.log(tokens)
+              if (tokens.token) {
+                AsyncStorage.setItem('tokens', JSON.stringify(tokens.token));
+                dispatch({ type: 'SIGN_IN', token: tokens.token });
               } else {
                 alert(
-                  'メールアドレス、パスワードが間違っています。'
+                  'メールアドレスかパスワードが間違っています。'
                 )
               }
             })
@@ -180,10 +184,10 @@ export default function Navigator() {
 
       signUp: async data => {
         try {
-          fetch(URL, {
-            method: 'POST',
+          fetch(`${URL}register`, {
+            method: 'post',
             headers: {
-              Accept: 'application/json',
+              'Accept': 'application/json',
               'Content-Type': 'application/json',
             },
             body: JSON.stringify({
@@ -194,14 +198,16 @@ export default function Navigator() {
             }),
           }).then(res => res.json())
             .then(tokens => {
-              if (tokens.message !== 'Server Error') {
-                AsyncStorage.setItem('tokens', JSON.stringify(tokens));
-                dispatch({ type: 'SIGN_IN', token: tokens });
+              if (tokens.token) {
+                AsyncStorage.setItem('tokens', JSON.stringify(tokens.token));
+                dispatch({ type: 'SIGN_IN', token: tokens.token });
               } else {
                 alert(
                   '入力された情報に誤りがあります。'
                 )
               }
+            }).catch((e) => {
+              console.error(e)
             });
         } catch (error) {
           return console.error(error);
