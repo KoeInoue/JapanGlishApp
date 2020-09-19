@@ -2,9 +2,10 @@ import React, { useState, useEffect } from 'react';
 import { StyleSheet, View, FlatList, SafeAreaView } from 'react-native';
 import LessonItem from '../components/modules/LessonItem';
 import Header from '../components/layout/Header';
-import axios from 'axios';
+import AsyncStorage from '@react-native-community/async-storage'
+import axios from 'axios'
 
-const URL = 'https://japanglish.herokuapp.com/api/lessons';
+const URL = 'https://japanglish.herokuapp.com/api/';
 
 export default HomeScreen = (props) => {
   const [lessons, setLessons] = useState([]);
@@ -14,11 +15,34 @@ export default HomeScreen = (props) => {
     fetchLessons();
   }, []);
 
+  let tokens = '';
+
+  const loadToken = async () => { 
+    tokens = await AsyncStorage.getItem('tokens')
+      .then((tokens) => {
+        return JSON.parse(tokens);
+      });
+    return tokens;
+  }
+
   const fetchLessons = async () => {
     try {
-      let response = await fetch(URL);
-      let json = await response.json();
-      return setLessons(json);
+      await loadToken().then(() => {
+        axios.get(URL, {
+            method: 'GET',
+            headers: {
+              'Authorization': `Bearer ${tokens}`,
+              'Accept': 'application/json',
+            },
+          }).then((res) => {
+            return setLessons(res.data);
+          }).catch((error) => {
+            console.error(error)
+          });
+      })
+      .catch((error) => {
+        console.error(error)
+      });
     } catch (error) {
       return console.error(error);
     }
