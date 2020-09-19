@@ -9,6 +9,7 @@ import CreateScreen from '../screens/CreateScreen';
 import SettingScreen from '../screens/SettingScreen';
 import ProfileScreen from '../screens/ProfileScreen';
 import MyLessonScreen from '../screens/MyLessonScreen';
+import MyLessonDetailScreen from '../screens/MyLessonDetailScreen';
 import BrowserScreen from '../screens/BrowserScreen';
 import LogoutScreen from '../screens/LogoutScreen';
 import { NavigationContainer } from '@react-navigation/native';
@@ -54,6 +55,7 @@ const SettingStack = () => {
       <Stack.Screen name="Setting" component={SettingScreen} options={{ headerShown: false }} />
       <Stack.Screen name="Profile" component={ProfileScreen} />
       <Stack.Screen name="MyLesson" component={MyLessonScreen} />
+      <Stack.Screen name="MyLessonDetail" component={MyLessonDetailScreen} />
       <Stack.Screen name="Browser" component={BrowserScreen} />
       <Stack.Screen name="Logout" component={LogoutScreen} />
     </Stack.Navigator>
