@@ -6,8 +6,30 @@ import { AuthContext} from '../navigations/Navigator'
 export default LoginScreen = (props) => {
   const [email, setEmail] = useState();
   const [password, setPassword] = useState();
+  const [errors, setErrors] = useState({});
 
   const { signIn } = useContext(AuthContext);
+
+  const validation = (val) => {
+    let isError = false;
+    if (!val.email) {
+      isError = true;
+      errors.email = 'メールアドレスを入力してください'
+    } else {
+      setErrors();
+    }
+    if (!val.password) {
+      isError = true;
+      errors.password = 'パスワードを入力してください'
+    } else {
+      setErrors();
+    }
+    
+    setErrors(Object.assign({}, errors));
+    if (isError) return;
+
+    return signIn(val);
+  }
 
   return (
     <SafeAreaView>
@@ -23,15 +45,18 @@ export default LoginScreen = (props) => {
           autoFocus={true}
           autoCapitalize='none'
         />
+        <Text style={styles.error}>{errors.email}</Text>
         <Text style={styles.label}>パスワード：</Text>
         <TextInput
           style={styles.input}
           placeholder='半角英数字6文字以上'
           onChangeText={password => setPassword(password)}
           autoCapitalize='none'
+          secureTextEntry={true}
         />
+        <Text style={styles.error}>{errors.password}</Text>
         <View style={styles.buttonWraper}>
-          <TouchableOpacity style={styles.submitButtonContainer} onPress={() => signIn({ email, password })}>
+          <TouchableOpacity style={styles.submitButtonContainer} onPress={() => validation({ email, password })}>
             <Text style={styles.buttonText}>ログイン</Text>
           </TouchableOpacity>
         </View>
@@ -50,6 +75,13 @@ const styles = StyleSheet.create({
   title: {
     marginTop: 30,
     alignItems: 'center',
+  },
+
+  error: {
+    marginTop: 10,
+    color: 'red',
+    fontSize: 14,
+    fontWeight: 'bold',
   },
 
   titleText: {

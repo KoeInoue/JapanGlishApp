@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useReducer, useMemo } from 'react';
+import React, { useEffect, useReducer, useMemo, Alert } from 'react';
 import SplashScreen from '../screens/SplashScreen'
 import TopScreen from '../screens/TopScreen';
 import LoginScreen from '../screens/LoginScreen';
@@ -13,13 +13,12 @@ import BrowserScreen from '../screens/BrowserScreen';
 import LogoutScreen from '../screens/LogoutScreen';
 import { NavigationContainer } from '@react-navigation/native';
 import { createStackNavigator } from '@react-navigation/stack';
-import { createSwitchNavigator } from 'react-navigation';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import AsyncStorage from '@react-native-community/async-storage'
+import { Image } from 'react-native';
+
 const AuthContext = React.createContext();
 const URL = 'https://japanglish.herokuapp.com/api/login';
-
-import { Image } from 'react-native';
 
 const Stack = createStackNavigator();
 const Tab = createBottomTabNavigator();
@@ -128,7 +127,7 @@ export default function Navigator() {
       try {
         userToken = await AsyncStorage.getItem('tokens');
       } catch (e) {
-        // Restoring token failed
+        console.log(e)
       }
 
       // After restoring token, we may need to validate it in production apps
@@ -155,12 +154,21 @@ export default function Navigator() {
               email: data.email,
               password: data.password,
             }),
-          }).then(res => res.json())
+          }).catch(() => {
+            console.log('errorr')
+            })
+            .then(res => res.json())
             .then(tokens => {
-              AsyncStorage.setItem('tokens', JSON.stringify(tokens));
-              dispatch({ type: 'SIGN_IN', token: tokens });
-            });
-        } catch (error) {
+              if (tokens.message !== 'Server Error') {
+                AsyncStorage.setItem('tokens', JSON.stringify(tokens.access_token));
+                dispatch({ type: 'SIGN_IN', token: tokens.access_token });
+              } else {
+                alert(
+                  'メールアドレス、パスワードが間違っています。'
+                )
+              }
+            })
+          } catch (error) {
           return console.error(error);
         }
       },
@@ -186,8 +194,14 @@ export default function Navigator() {
             }),
           }).then(res => res.json())
             .then(tokens => {
-              AsyncStorage.setItem('tokens', JSON.stringify(tokens));
-              dispatch({ type: 'SIGN_IN', token: tokens });
+              if (tokens.message !== 'Server Error') {
+                AsyncStorage.setItem('tokens', JSON.stringify(tokens));
+                dispatch({ type: 'SIGN_IN', token: tokens });
+              } else {
+                alert(
+                  '入力された情報に誤りがあります。'
+                )
+              }
             });
         } catch (error) {
           return console.error(error);

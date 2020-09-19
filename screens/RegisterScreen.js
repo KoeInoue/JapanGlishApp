@@ -8,7 +8,6 @@ import {
   TextInput,
   KeyboardAvoidingView,
 } from 'react-native';
-import AsyncStorage from '@react-native-community/async-storage'
 import { ScrollView } from 'react-native-gesture-handler';
 import { AuthContext } from '../navigations/Navigator'
 
@@ -53,7 +52,7 @@ export default RegisterScreen = (props) => {
             />
             <Text style={styles.label}>自己紹介文：</Text>
             <TextInput
-              style={[styles.input, {height: 300}]}
+              style={[styles.input, {height: 200}]}
               placeholder='こんにちは。太郎です。英語学習を初めて3ヶ月目です...'
               numberOfLines={5}
               multiline
