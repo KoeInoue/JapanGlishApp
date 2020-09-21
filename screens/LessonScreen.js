@@ -1,16 +1,19 @@
 import React from 'react';
 import { StyleSheet, View, SafeAreaView, Text } from 'react-native';
+import { ScrollView } from 'react-native-gesture-handler';
 
 export default LessonScreen = props => {
   const { route } = props;
   const { lesson } = route.params;
   return (
     <SafeAreaView>
+      <ScrollView>
       <View style={styles.container} >
         <Text style={styles.title}>{lesson.title}</Text>
         <Text style={styles.content}>{lesson.content}</Text>
         <Text style={styles.userName}>執筆者：{lesson.user.name}</Text>
       </View>
+      </ScrollView>
     </SafeAreaView>
   );
 };

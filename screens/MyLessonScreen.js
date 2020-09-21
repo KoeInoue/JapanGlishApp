@@ -60,7 +60,7 @@ export default MyLessonScreen = props => {
               userName={item.user.name}
               imageUrl={item.imageUrl}
               price={item.price}
-              onPress={() => props.navigation.navigate('MyLessonDetail', { lesson: item })}
+              onPress={() => props.navigation.navigate('Detail', { lesson: item })}
             />
           )}
           keyExtractor={(item, index) => index.toString()}

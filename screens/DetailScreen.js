@@ -1,32 +1,70 @@
 import React from 'react';
-import { StyleSheet, View, SafeAreaView, Text, TouchableOpacity } from 'react-native';
+import { StyleSheet, View, SafeAreaView, Text, TouchableOpacity, Alert } from 'react-native';
 import AsyncStorage from '@react-native-community/async-storage'
 import axios from 'axios'
+import { ScrollView } from 'react-native-gesture-handler';
 
-export default MyLessonDetailScreen = props => {
+const URL = 'https://japanglish.herokuapp.com/api/';
+
+export default DetailScreen = props => {
   const { route } = props;
   const { lesson } = route.params;
 
-  const updateLesson = () => {
-    alert('編集しますか？')
+  let tokens = '';
+  const loadToken = async () => {
+    tokens = await AsyncStorage.getItem('tokens')
+      .then((tokens) => {
+        return JSON.parse(tokens);
+      });
+    return tokens;
   }
-  const deleteLesson = () => {
-    alert('削除しますか？')
+
+  const createTwoButtonAlert = () => {
+    Alert.alert(
+      "! 確認 !",
+      "このレッスンを削除しますか？",
+      [
+        {
+          text: "Cancel",
+          onPress: () => console.log("Cancel Pressed"),
+          style: "cancel"
+        },
+        { text: "OK", onPress: () => deleteLesson() }
+      ],
+      { cancelable: false }
+    );
+  }
+
+  const deleteLesson = async () => {
+    await loadToken().then(() => {
+      axios.delete(`${URL}my-lessons/${lesson.id}?api_token=${tokens}`)
+        .then((res) => {
+          console.log(res)
+          alert('削除しました');
+          props.navigation.navigate('MyLesson');
+        }).catch((e) => {
+          console.error(e);
+        });
+    }).catch((e) => {
+      console.error(e)
+    })
   }
 
   return (
     <SafeAreaView>
+      <ScrollView>
       <View style={styles.container} >
         <Text style={styles.title}>{lesson.title}</Text>
         <Text style={styles.content}>{lesson.content}</Text>
         <Text style={styles.userName}>執筆者：{lesson.user.name}</Text>
-        <TouchableOpacity style={styles.button} onPress={() => updateLesson()}>
+          <TouchableOpacity style={styles.button} onPress={() => props.navigation.navigate('Edit', { lesson: lesson })}>
           <Text style={styles.buttonText}>編集する</Text>
         </TouchableOpacity>
-        <TouchableOpacity style={styles.deleteButton} onPress={() => deleteLesson()}>
+          <TouchableOpacity style={styles.deleteButton} onPress={() => createTwoButtonAlert()}>
           <Text style={styles.deleteButtonText}>削除する</Text>
         </TouchableOpacity>
-      </View>
+        </View>
+      </ScrollView>
     </SafeAreaView>
   );
 };
