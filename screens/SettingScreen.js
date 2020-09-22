@@ -14,7 +14,7 @@ export default SettingScreen = (props) => {
           onPress={() => props.navigation.navigate('Profile')}>
           <View style={styles.linkWrapper}>
             <Text style={styles.linkText}>
-              <Image source={require('../src/img/head-active.png')} style={{ width: 20, height: 20 }} /> プロフィールを編集 
+              <Image source={require('../src/img/head-active.png')} style={{ width: 20, height: 20 }} /> プロフィール
             </Text>
           </View>
         </TouchableOpacity>

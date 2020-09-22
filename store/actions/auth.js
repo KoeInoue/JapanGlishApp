@@ -17,7 +17,6 @@ export const signup = (name, email, password, introduce) => {
     });
 
     const res = await response.json();
-    console.log(res);
     
     dispatch({ type: SIGNUP})
   }

@@ -132,7 +132,7 @@ export default function Navigator() {
       try {
         userToken = await AsyncStorage.getItem('tokens');
       } catch (e) {
-        console.log(e)
+        
       }
 
       // After restoring token, we may need to validate it in production apps
@@ -159,12 +159,9 @@ export default function Navigator() {
               email: data.email,
               password: data.password,
             }),
-          }).catch(() => {
-              console.log('errorr')
             })
             .then(res => res.json())
             .then(tokens => {
-              console.log(tokens)
               if (tokens.token) {
                 AsyncStorage.setItem('tokens', JSON.stringify(tokens.token));
                 dispatch({ type: 'SIGN_IN', token: tokens.token });
@@ -225,7 +222,13 @@ export default function Navigator() {
         <Stack.Navigator>
           {state.isLoading ? (
             // We haven't finished checking for the token yet
-            <Stack.Screen name="Splash" component={SplashScreen} />
+            <Stack.Screen
+              name="Splash"
+              component={SplashScreen}
+              options={{
+                headerShown: false,
+              }}
+            />
           ) : state.userToken == null ? (
             // No token found, user isn't signed in
             <Stack.Screen

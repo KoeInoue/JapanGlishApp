@@ -39,7 +39,6 @@ export default DetailScreen = props => {
     await loadToken().then(() => {
       axios.delete(`${URL}my-lessons/${lesson.id}?api_token=${tokens}`)
         .then((res) => {
-          console.log(res)
           alert('削除しました');
           props.navigation.navigate('MyLesson');
         }).catch((e) => {

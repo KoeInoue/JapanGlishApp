@@ -47,7 +47,6 @@ export default EditScreen = (props) => {
         price: val.price,
       })
         .then((res) => {
-          console.log(res)
           alert('編集しました');
           props.navigation.navigate('MyLesson');
         }).catch((e) => {

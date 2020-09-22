@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
-import { StyleSheet, View, FlatList, SafeAreaView } from 'react-native';
+import { StyleSheet, View, FlatList, SafeAreaView, ActivityIndicator } from 'react-native';
+import { useFocusEffect } from '@react-navigation/native';
 import LessonItem from '../components/modules/LessonItem';
 import Header from '../components/layout/Header';
 import AsyncStorage from '@react-native-community/async-storage'
@@ -10,9 +11,41 @@ export default MyLessonScreen = props => {
   const [lessons, setLessons] = useState([]);
   const [loading, setLoading] = useState(false);
 
-  useEffect(() => {
-    fetchLessons();
-  }, []);
+  useFocusEffect(
+    React.useCallback(() => {
+      let isActive = true;
+      const fetchLessons = async () => {
+        try {
+          setLoading(true);
+          await loadToken().then(() => {
+            axios.get(`${URL}my-lessons?api_token=${tokens}`, {
+              method: 'GET',
+              headers: {
+                'Accept': 'application/json',
+              },
+            }).then((res) => {
+              if (isActive) {
+                setLoading(false);
+                return setLessons(res.data);
+              }
+            }).catch((error) => {
+              console.error(error)
+            });
+          })
+            .catch((error) => {
+              console.error(error)
+            });
+        } catch (error) {
+          return console.error(error);
+        }
+      };
+      fetchLessons();
+      return () => {
+        isActive = false;
+      };
+    }, [])
+  );
+
 
   let tokens = '';
 
@@ -24,47 +57,32 @@ export default MyLessonScreen = props => {
     return tokens;
   }
 
-  const fetchLessons = async () => {
-    try {
-      await loadToken().then(() => {
-        console.log(tokens);
-        axios.get(`${URL}my-lessons?api_token=${tokens}`, {
-          method: 'GET',
-          headers: {
-            'Accept': 'application/json',
-          },
-        }).then((res) => {
-          return setLessons(res.data);
-        }).catch((error) => {
-          console.error(error)
-        });
-      })
-        .catch((error) => {
-          console.error(error)
-        });
-    } catch (error) {
-      return console.error(error);
-    }
-  };
+  
 
   return (
     <SafeAreaView>
       <View style={styles.container}>
-        <FlatList
-          data={lessons}
-          numColumns={2}
-          renderItem={({ item }) => (
-            <LessonItem
-              title={item.title}
-              content={item.content}
-              userName={item.user.name}
-              imageUrl={item.imageUrl}
-              price={item.price}
-              onPress={() => props.navigation.navigate('Detail', { lesson: item })}
-            />
-          )}
-          keyExtractor={(item, index) => index.toString()}
-        />
+        {(loading) ?
+          <View style={styles.container}>
+            <ActivityIndicator size="large" color="#EB5D00" />
+          </View>
+          :
+          <FlatList
+            data={lessons}
+            numColumns={2}
+            renderItem={({ item }) => (
+              <LessonItem
+                title={item.title}
+                content={item.content}
+                userName={item.user.name}
+                imageUrl={item.imageUrl}
+                price={item.price}
+                onPress={() => props.navigation.navigate('Detail', { lesson: item })}
+              />
+            )}
+            keyExtractor={(item, index) => index.toString()}
+          />
+        }
       </View>
     </SafeAreaView>
   );
